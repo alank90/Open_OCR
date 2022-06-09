@@ -1,0 +1,29 @@
+{
+  "name": "ocr_electron",
+  "version": "1.0.0",
+  "description": "Electron app to do OCR conversion",
+  "author": "Alan KIllian",
+  "scripts": {
+    "serve": "vite preview",
+    "build": "vite build",
+    "dev": "vite",
+    "start": "concurrently --kill-others \"npm run dev\" \"electron .\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "vue": "^3.2.37",
+    "vue-router": "^4.0.15"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.3",
+    "@vue/compiler-sfc": "^3.2.37",
+    "concurrently": "^7.2.1",
+    "electron": "^19.0.3",
+    "eslint": "^8.17.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-vue": "^9.1.0",
+    "prettier": "2.6.2",
+    "vite": "^2.9.10"
+  }
+}
