@@ -12,6 +12,8 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@oruga-ui/oruga-next": "^0.5.5",
+    "purecss": "^2.1.0",
     "vue": "^3.2.37",
     "vue-router": "^4.0.15"
   },

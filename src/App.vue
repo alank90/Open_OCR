@@ -5,7 +5,7 @@ import OCR from "./components/OCR.vue";
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/img/ocr_logo.jpg" />
+  <img alt="OCR logo" src="./assets/img/ocr_logo.jpg" />
   <OCR msg="OCR App" />
 </template>
 
@@ -17,5 +17,10 @@ import OCR from "./components/OCR.vue";
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 </style>
