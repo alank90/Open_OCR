@@ -1,30 +1,67 @@
 <script setup>
-defineProps({
-  msg: String,
-});
+import { ref } from "vue";
+let isSuccess = ref(true);
+let isFailed = ref(false);
+let isInitial = ref(true);
 </script>
 
 <template>
   <div class="pure-menu pure-menu-horizontal">
     <a href="#" class="pure-menu-heading pure-menu-link">Simple OCR</a>
 
-    <span>
-      <ul class="pure-menu-list">
+    <span v-if="isSuccess || isFailed" class="menu-bar">
+      <ul class="pure-menu-list menu-bar-list">
         <li class="pure-menu-item">
-          <a @click="reset" href="#" class="pure-menu-link"
-            >refresh<i class="fa-solid fa-rotate"></i
-          ></a>
+          <a @click="reset" href="#" class="pure-menu-link tooltip"
+            ><i class="fa-solid fa-rotate"></i
+            ><span class="tooltiptext">refresh</span></a
+          >
         </li>
         <li class="pure-menu-item">
-          <a @click="save" href="#" class="pure-menu-link">save</a>
+          <a @click="save" href="#" class="pure-menu-link tooltip"
+            ><i class="fa-solid fa-floppy-disk"></i
+            ><span class="tooltiptext">save</span></a
+          >
         </li>
         <li class="pure-menu-item">
-          <a @click="drive" href="#" class="pure-menu-link">file_upload</a>
+          <a @click="drive" href="#" class="pure-menu-link tooltip"
+            ><i class="fa-solid fa-upload"></i
+            ><span class="tooltiptext">file_upload</span></a
+          >
         </li>
       </ul>
     </span>
   </div>
-  <div id="inspire">
+  <!-- ========== End menu bar ================ -->
+  
+  <img alt="OCR logo" src="../assets/img/ocr_logo.jpg" />
+
+  <!-- ========= Main Content ==========================  -->
+  <div class="pure-g">
+    <div v-if="isInitial" class="pure-u-3-5 container">
+      <form enctype="multipart/form-data" novalidate>
+        <h1>Uploadimage</h1>
+        <div class="dropbox">
+          <input
+            type="file"
+            :name="'document'"
+            :disabled="isSaving"
+            @change="filesChange($event.target.files)"
+            accept="image/*"
+            class="input-file"
+          />
+          <p v-if="isInitial">
+            Drag your file here to begin<br />
+            or click to browse
+          </p>
+        </div>
+      </form>
+    </div>
+    <div v-if="isSaving" class="container"></div>
+  </div>
+
+  <!-- ========= End Main content ======================  -->
+  <!-- <div id="inspire">
     <v-toolbar app fixed clipped-left>
       <v-toolbar-title>Simple OCR</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -94,10 +131,35 @@ defineProps({
     <v-footer app fixed>
       <span>&copy; 2022 - Alan Killian &lt;@akillian&gt;</span>
     </v-footer>
-  </div>
+  </div> -->
 </template>
 
 <style scoped>
+.pure-menu-horizontal {
+  display: flex; /* flexbox for main menu */
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  margin-top: -50px;
+}
+
+a.pure-menu-link {
+  flex-grow: 0.1;
+}
+
+.menu-bar {
+  flex-grow: 0.3;
+}
+
+.menu-bar .pure-menu-list.menu-bar-list {
+  display: flex; /* flexbox for the menu list */
+  flex-wrap: nowrap;
+  justify-content: space-around;
+}
+
+.container {
+  margin: 0 auto;
+}
+
 .dropbox {
   outline: 2px dashed grey; /* the dash box */
   outline-offset: -10px;
@@ -127,8 +189,50 @@ defineProps({
 }
 
 .dropbox p {
-  font-size: 1.2em;
+  font-size: 0.9rem;
   text-align: center;
   padding: 50px 0;
+}
+
+/* ========== Tool tip stylings ============ */
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  top: 100%;
+  left: 50%;
+  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Create arrow */
+.tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%; /* At the top of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
 </style>

@@ -5,7 +5,6 @@ import OCR from "./components/OCR.vue";
 </script>
 
 <template>
-  <img alt="OCR logo" src="./assets/img/ocr_logo.jpg" />
   <OCR msg="OCR App" />
 </template>
 
