@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from "vue";
+
+const value = ref(50);
 let isSuccess = ref(true);
 let isFailed = ref(false);
 let isInitial = ref(true);
@@ -33,7 +35,7 @@ let isInitial = ref(true);
     </span>
   </div>
   <!-- ========== End menu bar ================ -->
-  
+
   <img alt="OCR logo" src="../assets/img/ocr_logo.jpg" />
 
   <!-- ========= Main Content ==========================  -->
@@ -61,6 +63,10 @@ let isInitial = ref(true);
   </div>
 
   <!-- ========= End Main content ======================  -->
+
+  <!-- ==== Progress Bar =========== -->
+  <ve-progress :progress="value" />
+
   <!-- <div id="inspire">
     <v-toolbar app fixed clipped-left>
       <v-toolbar-title>Simple OCR</v-toolbar-title>
