@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, onMounted } from "vue";
 import Tesseract from "tesseract.js";
 
 // === Vars ======== //
@@ -9,11 +9,11 @@ const STATUS_SUCCESS = 2;
 const STATUS_FAILED = 3;
 
 // === Reactive Vars === //
-const value = ref(50);
+let value = ref(50);
 
-const currentStatus = ref(null);
-const drawer = ref(null);
-const status = reactive({});
+let currentStatus = ref(null);
+let drawer = ref(null);
+let status = reactive({});
 const gradient = reactive({
   radial: false,
   colors: [
@@ -30,7 +30,7 @@ const gradient = reactive({
   ],
 });
 
-// ====== Computed Variables ===== //
+// ====== Computed Properties ===== //
 const isInitial = computed(() => currentStatus.value === STATUS_INITIAL);
 
 const isSaving = computed(() => currentStatus.value === STATUS_SAVING);
@@ -45,7 +45,7 @@ const progress = computed(() => Math.floor(status.progress * 100));
  * Tesseract Setup
  * @input - image to covert via OCR
  */
-/* Tesseract.recognize("C:/Users/akillian/Desktop/sampleText.jpg").progress(function (packet) {
+/* Tesseract.recognize("C:/Users/akillian/Desktop/ocr_doc.jpg").progress(function (packet) {
     console.info(packet);
   })
   .then(function (result) {
@@ -74,6 +74,29 @@ function ocr(event) {
       this.status = error;
     });
 }
+
+/**
+ * reset
+ */
+function reset() {
+  currentStatus = STATUS_INITIAL;
+  status = {};
+}
+
+function save() {}
+
+function drive() {}
+
+function filesChange(fileList) {
+  if (!fileList.length) return;
+
+  currentStatus = STATUS_SAVING;
+  ocr(fileList[0]);
+}
+
+onMounted(() => {
+  reset();
+});
 </script>
 
 <template>
