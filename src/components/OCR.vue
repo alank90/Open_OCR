@@ -1,12 +1,16 @@
 <script setup>
 import { reactive, ref, computed, onMounted } from "vue";
-import Tesseract from "tesseract.js";
+import { createWorker, PSM, OEM } from "tesseract.js";
 
 // === Vars ======== //
 const STATUS_INITIAL = 0;
 const STATUS_SAVING = 1;
 const STATUS_SUCCESS = 2;
 const STATUS_FAILED = 3;
+
+const worker = createWorker({
+  logger: (m) => console.log(m),
+});
 
 // === Reactive Vars === //
 let value = ref(50);
@@ -56,7 +60,7 @@ const progress = computed(() => Math.floor(status.progress * 100));
  * @params - event
  */
 
-function ocr() {
+/* function ocr() {
   Tesseract.recognize("C:/Users/akillian/Downloads/sampleText.jpg", "eng", {
     logger: (m) => console.log(m),
   })
@@ -70,34 +74,37 @@ function ocr() {
       currentStatus.value = STATUS_FAILED;
       status = error;
     });
-}
+} */
 
 /**
  * reset
  */
-function reset() {
+async function reset() {
   currentStatus.value = STATUS_INITIAL;
   status = {};
-  Tesseract.recognize(
-    // eslint-disable-next-line no-useless-escape
-    "C:\Users\akillian\Downloads\sampleText.jpg",
-    "eng",
-    { logger: (m) => console.log(m) }
-  ).then(({ data: { text } }) => {
-    console.log(text);
+
+  await worker.load();
+  await worker.loadLanguage("eng");
+  await worker.initialize("eng", OEM.LSTM_ONLY);
+  await worker.setParameters({
+    tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
   });
+  const {
+    data: { text },
+  } = await worker.recognize("@/assets/img/testocr.png");
+  console.log(text);
 }
 
 function save() {}
 
 function drive() {}
 
-function filesChange(fileList) {
+/* function filesChange(fileList) {
   if (!fileList.length) return;
 
   currentStatus.value = STATUS_SAVING;
   ocr(fileList[0]);
-}
+} */
 
 onMounted(() => {
   reset();
