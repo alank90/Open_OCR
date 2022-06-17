@@ -10,7 +10,6 @@ const STATUS_FAILED = 3;
 
 // === Reactive Vars === //
 let value = ref(50);
-
 let currentStatus = ref(null);
 let drawer = ref(null);
 let status = reactive({});
@@ -57,21 +56,19 @@ const progress = computed(() => Math.floor(status.progress * 100));
  * @params - event
  */
 
-function ocr(event) {
-  Tesseract.workerOptions.workerPath = "http://localhost:8080/static/worker.js";
-  Tesseract.workerOptions.langPath = "http://localhost:8080/static/";
+function ocr() {
+  Tesseract.recognize("C:/Users/akillian/Downloads/sampleText.jpg", "eng", {
+    logger: (m) => console.log(m),
+  })
 
-  Tesseract.recognize(event)
-    .progress((status) => {
-      this.status = status;
-    })
-    .then((result) => {
-      this.currentStatus = STATUS_SUCCESS;
-      this.status = result;
+    .then(({ data: { text } }) => {
+      currentStatus.value = STATUS_SUCCESS;
+      status = 2;
+      console.log(text);
     })
     .catch((error) => {
-      this.currentStatus = STATUS_FAILED;
-      this.status = error;
+      currentStatus.value = STATUS_FAILED;
+      status = error;
     });
 }
 
@@ -79,8 +76,16 @@ function ocr(event) {
  * reset
  */
 function reset() {
-  currentStatus = STATUS_INITIAL;
+  currentStatus.value = STATUS_INITIAL;
   status = {};
+  Tesseract.recognize(
+    // eslint-disable-next-line no-useless-escape
+    "C:\Users\akillian\Downloads\sampleText.jpg",
+    "eng",
+    { logger: (m) => console.log(m) }
+  ).then(({ data: { text } }) => {
+    console.log(text);
+  });
 }
 
 function save() {}
@@ -90,7 +95,7 @@ function drive() {}
 function filesChange(fileList) {
   if (!fileList.length) return;
 
-  currentStatus = STATUS_SAVING;
+  currentStatus.value = STATUS_SAVING;
   ocr(fileList[0]);
 }
 
@@ -151,20 +156,21 @@ onMounted(() => {
         </div>
       </form>
     </div>
-    <div v-if="isSaving" class="container"></div>
   </div>
 
   <!-- ========= End Main content ======================  -->
 
   <!-- ============= Progress Bar ====================== -->
-  <ve-progress
-    :progress="value"
-    :size="425"
-    :angle="-90"
-    :color="gradient"
-    animation="rs 1500 500"
-    font-size="2.5rem"
-  />
+  <div v-if="isSaving" class="container">
+    <ve-progress
+      :progress="value"
+      :size="425"
+      :angle="-90"
+      :color="gradient"
+      animation="rs 1500 500"
+      font-size="2.5rem"
+    />
+  </div>
 
   <!-- ============= Results Markup ==================== -->
   <div v-if="isSuccess || isFailed" class="results-container">
